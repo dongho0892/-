@@ -15,7 +15,23 @@ from numpy import *
 import operator
 from os import listdir
 
+# Python3 버전
 def classify0(inX, dataSet, labels, k):
+    diffMat = inX - dataSet
+    sqDiffMat = diffMat**2
+    sqDistances = sqDiffMat.sum(axis=1)
+    distances = sqDistances**0.5
+    sortedDistIndices = distances.argsort()
+    classCount = {}
+    for i in range(k):
+        voteIlabel = labels[sortedDistIndices[i]]
+        classCount[voteIlabel] = classCount.get(voteIlabel, 0) + 1
+    sortedClassCount = sorted(classCount,
+                              reverse=True)
+    return sortedClassCount[0]
+
+
+def classify0_p2(inX, dataSet, labels, k):         # 파이썬 2버전 (백업함)
     dataSetSize = dataSet.shape[0]
     diffMat = tile(inX, (dataSetSize,1)) - dataSet
     sqDiffMat = diffMat**2
@@ -105,4 +121,6 @@ def handwritingClassTest():
         print ("the classifier came back with: %d, the real answer is: %d" % (classifierResult, classNumStr))
         if (classifierResult != classNumStr): errorCount += 1.0
     print ("\nthe total number of errors is: %d" % errorCount)
-    print ("\nthe total error rate is: %f" % (errorCount/float(mTest)))
+    print ("\nthe total error rate is: %f" % (errorCount/float(mTest))) 
+    
+    # print () 쓰워주기!!
