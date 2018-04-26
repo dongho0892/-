@@ -32,32 +32,44 @@ def calcShannonEnt(dataSet):    # 위의 labels와 Label은 다름!
         shannonEnt -= prob * log(prob,2) #log base 2             # 정보량의 기대값은 확률에 로그확률을 곱합
     return shannonEnt                                           # 엔트로비를 구하는 방법
     
-def splitDataSet(dataSet, axis, value):
+    
+      - dataSet: 분할하고자 하는 데이터 집합
+      - axis: 특징의 인덱스
+      - value: 특징의 값
+    
+                # 맞추어서 써야함.# 0번째 feature로 감.
+def splitDataSet(dataSet, axis, value):                     #     
     retDataSet = []
     for featVec in dataSet:
-        if featVec[axis] == value:
+        if featVec[axis] == value:            첫번째 로우의 밸류값이 
             reducedFeatVec = featVec[:axis]     #chop out axis used for splitting
-            reducedFeatVec.extend(featVec[axis+1:])
-            retDataSet.append(reducedFeatVec)
-    return retDataSet
+            reducedFeatVec.extend(featVec[axis+1:])     => 위 두라인을 통과하고 나면   해당 feature만 뺌   [ 0,0 ] =>        
+            retDataSet.append(reducedFeatVec)        # 0에 대해서 시행하고 / 1에 대해서 시행하고, 각각 분리되서 나오게 됨.
+    return retDataSet                              # 리턴데이터셋에다가 넣어줌. 
     
 def chooseBestFeatureToSplit(dataSet):
-    numFeatures = len(dataSet[0]) - 1      #the last column is used for the labels
+    numFeatures = len(dataSet[0]) - 1      # the last column is used for the labels         
+                                           # [1, 1, 'yes'],   이렇게 생긴 거에서 마지막 label만 제거 하면 피처 2개만 나옴
     baseEntropy = calcShannonEnt(dataSet)
-    bestInfoGain = 0.0; bestFeature = -1
-    for i in range(numFeatures):        #iterate over all the features
-        featList = [example[i] for example in dataSet]#create a list of all the examples of this feature
-        uniqueVals = set(featList)       #get a set of unique values
+    bestInfoGain = 0.0; bestFeature = -1     # 최적인 정보 값을 구하기 위해서 우선 0으로 둠.
+        피처번호 (0,1) - 노서피싱 / 지느러미
+    for i in range(numFeatures):                # iterate over all the features   # 피처 갯수만큼 반복을 함.
+           # 0번째 피처에 해당하는                  
+        featList = [example[i] for example in dataSet]   # create a list of all the examples of this feature
+        uniqueVals = set(featList)   # 유니크한 값만 나오게해서 나중에 밸류값으로 쓰기 위해서           # get a set of unique values
         newEntropy = 0.0
-        for value in uniqueVals:
+                      # 유니크한  피처를 뽑아오겠다. 
+        for value in uniqueVals:        # 0번째 피처에 0값을 가지는 것
             subDataSet = splitDataSet(dataSet, i, value)
-            prob = len(subDataSet)/float(len(dataSet))
-            newEntropy += prob * calcShannonEnt(subDataSet)     
-        infoGain = baseEntropy - newEntropy     #calculate the info gain; ie reduction in entropy
-        if (infoGain > bestInfoGain):       #compare this to the best gain so far
-            bestInfoGain = infoGain         #if better than current best, set to best
-            bestFeature = i
-    return bestFeature                      #returns an integer
+            prob = len(subDataSet)/float(len(dataSet))    확률을 구해서
+            newEntropy += prob * calcShannonEnt(subDataSet)        # 정보량을 구한 다음에, 각각 자기의 확률을 다시 곱해서  합해줌.
+        infoGain = baseEntropy - newEntropy     # calculate the info gain; ie reduction in entropy
+                   
+        if (infoGain > bestInfoGain):       # compare this to the best gain so far
+            bestInfoGain = infoGain         # if better than current best, set to best
+            bestFeature = i                    # 정보이득을 판단해서 좋은 걸로 선택하게끔 결과치를 리턴시켜줌.
+                                               # 그래서 좋은 것이면 아래 리턴 할때 그걸로 되게끔 함.
+    return bestFeature                      #returns an integer    
 
 def majorityCnt(classList):
     classCount={}
