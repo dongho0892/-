@@ -95,8 +95,8 @@ def datingClassTest(file, ratio = 0.1, k = 3):
         classifierResult = classify0(normMat[i, :], normMat[numTestVecs:m, :], \
                                          datingLabels[numTestVecs:m], k)        
         # 교재에서는 %s 대신 %d, 교재대로 하려면 datingTestSet2.txt 파일을 사용
-        print("the classifier came back with: %s, the real answer is: %s"\      # 분류기의 결과와 실제 값이 화면에 출력됨
-                % (classifierResult, datingLabels[i]))
+        print("the classifier came back with: %s, the real answer is: %s"\
+                % (classifierResult, datingLabels[i]))# 분류기의 결과와 실제 값이 화면에 출력됨
         if (classifierResult != datingLabels[i]):
             errorCount += 1
             print("!!!NOT MATCHED!!!")
